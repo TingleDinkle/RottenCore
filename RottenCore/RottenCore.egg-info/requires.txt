@@ -1,0 +1,10 @@
+torch
+torchvision
+opencv-python
+numpy
+Pillow
+av
+scipy
+tqdm
+numba
+lpips@ git+https://github.com/richzhang/PerceptualSimilarity.git

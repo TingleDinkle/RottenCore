@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torchvision.utils
-from ttools.modules.losses import LPIPS
+import lpips
 from torch.utils.data import DataLoader
 import math
 import os
@@ -180,7 +180,7 @@ def train_glyphs(
 
     # Set up optimizer and loss function
     optimizer = torch.optim.Adam(recr_model.parameters(), lr=learning_rate)
-    perceptual_loss_fn = LPIPS(net='alex').to(actual_device) # Using 'alex' net for LPIPS
+    perceptual_loss_fn = lpips.LPIPS(net='alex').to(actual_device) # Using 'alex' net for LPIPS
 
     print("Starting training...")
     for epoch in tqdm(range(epochs), desc="Training Epochs"):

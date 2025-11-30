@@ -1,0 +1,8 @@
+LICENSE
+setup.py
+RottenCore.egg-info/PKG-INFO
+RottenCore.egg-info/SOURCES.txt
+RottenCore.egg-info/dependency_links.txt
+RottenCore.egg-info/entry_points.txt
+RottenCore.egg-info/requires.txt
+RottenCore.egg-info/top_level.txt

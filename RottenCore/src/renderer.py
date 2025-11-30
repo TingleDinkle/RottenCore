@@ -1,25 +1,23 @@
 import cv2
 import numpy as np
 import torch
-import pickle
-from tqdm import tqdm
 import os # For checking file existence
+from src.compression import RottenCompressor
 
 class RottenRenderer:
     def __init__(self, rc_file_path: str):
         if not os.path.exists(rc_file_path):
             raise FileNotFoundError(f"RottenCore project file not found: {rc_file_path}")
 
-        with open(rc_file_path, 'rb') as f:
-            project_data = pickle.load(f)
+        blocks, block_sequence, metadata = RottenCompressor.load_project(rc_file_path)
         
-        self.blocks = project_data['blocks'] # Expects a torch.Tensor
-        self.width = project_data['width']
-        self.height = project_data['height']
-        self.block_size = project_data['block_size']
-        self.num_glyphs = project_data['num_glyphs']
-        self.block_sequence = project_data['block_sequence'] # List of numpy arrays, one per frame
-        self.original_fps = project_data.get('original_fps', 30.0) # Load original_fps, default to 30.0
+        self.blocks = blocks # Expects a torch.Tensor
+        self.width = metadata['width']
+        self.height = metadata['height']
+        self.block_size = metadata['block_size']
+        self.num_glyphs = metadata['num_glyphs']
+        self.block_sequence = block_sequence # List of numpy arrays, one per frame
+        self.original_fps = metadata.get('original_fps', 30.0) # Load original_fps, default to 30.0
 
         self.block_h, self.block_w = self.block_size
         self.num_blocks_x = self.width // self.block_w

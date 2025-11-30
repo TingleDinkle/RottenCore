@@ -9,9 +9,9 @@ import numpy as np
 import cv2
 from scipy.ndimage.filters import gaussian_filter
 from tqdm import tqdm
-import pickle # For saving/loading project files
 
 from .video_utils import VideoFramesDataset
+from src.compression import RottenCompressor
 
 class ImageReconstruction(nn.Module):
     def __init__(self, width: int, height: int, block_size: tuple = (8, 8), n_blocks: int = 256):
@@ -249,15 +249,16 @@ def train_glyphs(
 
     print("Saving project file...")
     # Save the trained blocks and metadata
-    project_data = {
-        'blocks': recr_model.blocks.detach().cpu(), # Move to CPU and detach from graph
-        'width': width,
-        'height': height,
-        'block_size': block_size,
-        'num_glyphs': num_glyphs,
-        'block_sequence': block_sequence, # Add the generated block sequence
-        'original_fps': original_fps # Add original FPS
-    }
-    with open(output_rc_path, 'wb') as f:
-        pickle.dump(project_data, f)
+    RottenCompressor.save_project(
+        output_rc_path,
+        blocks=recr_model.blocks.detach().cpu(),
+        block_sequence=block_sequence,
+        metadata={
+            'width': width,
+            'height': height,
+            'block_size': block_size,
+            'num_glyphs': num_glyphs,
+            'original_fps': original_fps
+        }
+    )
     print(f"Project saved to {output_rc_path}")

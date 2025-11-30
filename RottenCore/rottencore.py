@@ -4,8 +4,8 @@ import torch
 import pickle
 
 from src.core import train_glyphs
-from src.exporter import RottenCoreProject
 from src.video_utils import get_video_properties
+from src.compression import RottenCompressor
 from src.fast_kmeans import generate_glyphs_kmeans
 from src.renderer import RottenRenderer
 from src.config import (

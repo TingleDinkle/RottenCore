@@ -3,9 +3,9 @@ from numba import njit, prange
 from tqdm import tqdm
 import math
 import torch # For converting to/from VideoFramesDataset
-import pickle # For saving project data
 
 from .video_utils import VideoFramesDataset # Import to use VideoFramesDataset
+from src.compression import RottenCompressor
 
 # Constants from common/bacommon.h
 BLOCKSIZE = 8
@@ -293,15 +293,16 @@ def generate_glyphs_kmeans(video_path: str, output_rc_path: str, width: int, hei
     final_glyphs_3d = final_glyphs.reshape(num_glyphs, block_h, block_w)
 
     # Save the trained blocks and metadata
-    project_data = {
-        'blocks': torch.from_numpy(final_glyphs_3d).float(), # Convert back to torch tensor for consistency with ML path
-        'width': width,
-        'height': height,
-        'block_size': block_size,
-        'num_glyphs': num_glyphs,
-        'block_sequence': block_sequence_for_rendering, # Add the generated block sequence
-        'original_fps': original_fps # Add original FPS
-    }
-    with open(output_rc_path, 'wb') as f:
-        pickle.dump(project_data, f)
+    RottenCompressor.save_project(
+        output_rc_path,
+        blocks=torch.from_numpy(final_glyphs_3d).float(), # Convert back to torch tensor for consistency with ML path
+        block_sequence=block_sequence_for_rendering,
+        metadata={
+            'width': width,
+            'height': height,
+            'block_size': block_size,
+            'num_glyphs': num_glyphs,
+            'original_fps': original_fps
+        }
+    )
     print(f"K-Means project saved to {output_rc_path}")

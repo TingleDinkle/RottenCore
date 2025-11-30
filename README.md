@@ -4,17 +4,17 @@
   <img src="https://github.com/TingleDinkle/RottenCore/blob/27f5a28ad5a2aab7a0ef7370a1dc0527d094b40c/logo.jpg"/>
 </p>
 
-RottenCore is a powerful command-line interface (CLI) tool designed to transform conventional videos into stylized "glyph" art animations. This project is an independent effort to create a general-purpose video-to-glyph converter, inspired by existing microcontroller-focused projects. RottenCore compresses video content by converting each frame into a sequence of discrete, small (e.g., 8x8 pixel) graphical blocks (glyphs). This process drastically reduces video data while maintaining a recognizable, albeit "rotten," aesthetic, ideal for low-bandwidth applications, artistic expression, or retro-style displays.
+RottenCore is a powerful command-line interface (CLI) tool designed to transform conventional videos into stylized "glyph" art animations. This project is an independent effort to create a general-purpose video-to-glyph converter, inspired by existing microcontroller-focused projects. RottenCore compresses video content by converting each frame into a sequence of discrete, small (e.g., 8x8 pixel) graphical blocks (glyphs). This process drastically reduces video data while maintaining a recognizable, albeit "rotten," aesthetic, ideal for low-bandwidth applications, artistic expression, or retro-style displays. The output is saved in a highly compressed, custom binary `.rc` format using LZMA compression.
 
 ## Functionality
 
 RottenCore provides two primary modes for glyph generation and a robust rendering engine:
 
-1.  **Machine Learning Optimization (`optimize` command):** Utilizes an LPIPS-based neural network to learn the optimal set of 256 (or custom number) glyphs that best represent the video's visual content. This method aims for high perceptual quality but can be computationally intensive.
+1.  **Machine Learning Optimization (`optimize` command):** Utilizes an LPIPS-based neural network to learn the optimal set of 256 (or custom number) glyphs that best represent the video's visual content. This method aims for high perceptual quality but can be computationally intensive. The resulting project is saved as a highly compressed `.rc` file.
 
-2.  **Fast K-Means Clustering (`optimize_kmeans` command):** Employs an optimized K-Means algorithm (adapted from existing C implementations and accelerated with Numba) to quickly derive a set of representative glyphs. This mode is significantly faster and suitable for users who prioritize speed or are working with simpler visual content.
+2.  **Fast K-Means Clustering (`optimize_kmeans` command):** Employs an optimized K-Means algorithm (adapted from existing C implementations and accelerated with Numba) to quickly derive a set of representative glyphs. This mode is significantly faster and suitable for users who prioritize speed or are working with simpler visual content. The resulting project is saved as a highly compressed `.rc` file.
 
-3.  **Flexible Rendering (`render` command):** Reconstructs the glyph-based video into standard formats like MP4 or GIF. It supports customizable scaling factors, allowing users to upscale the "rotten" output to higher resolutions while preserving the crisp, pixel-art look.
+3.  **Flexible Rendering (`render` command):** Reconstructs the glyph-based video from a compressed `.rc` project file into standard video formats like MP4 or GIF. It supports customizable scaling factors, allowing users to upscale the "rotten" output to higher resolutions while preserving the crisp, pixel-art look.
 
 ## Acknowledgements
 
@@ -30,13 +30,21 @@ Assuming you have obtained the RottenCore project files (e.g., by downloading a 
     ```bash
     cd /path/to/RottenCore
     ```
-2.  **Install dependencies:**
+2.  **Create and Activate a Virtual Environment (Recommended):**
+    ```bash
+    python -m venv .venv
+    # On Windows:
+    .venv\Scripts\activate
+    # On macOS/Linux:
+    source .venv/bin/activate
+    ```
+3.  **Install dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
-    Note: The `lpips` library (a dependency for the ML optimization) is installed directly from its GitHub repository via a custom entry in `setup.py`.
-3.  **FFmpeg:** Ensure FFmpeg is installed and available in your system's PATH for video processing. This is crucial for video loading and GIF output.
-4.  **(Optional) Install as an editable package:**
+    Note: Ensure `lpips` is included in `requirements.txt` for the ML optimization features.
+4.  **FFmpeg:** Ensure FFmpeg is installed and available in your system's PATH for video processing. This is crucial for video loading and GIF output.
+5.  **(Optional) Install as an editable package:**
     If you plan to develop RottenCore or want to use the `rottencore` command directly from your shell, you can install it in "editable" mode:
     ```bash
     pip install -e .
@@ -50,11 +58,11 @@ Assuming you have obtained the RottenCore project files (e.g., by downloading a 
 To train glyphs for a video using the ML (LPIPS) method:
 
 ```bash
-python rottencore.py optimize input.mp4 --out project.rc --width 64 --height 48 --epochs 500
+python RottenCore/rottencore.py optimize input.mp4 --out project.rc --width 64 --height 48 --epochs 500
 ```
 
 *   `input.mp4`: Path to your input video file.
-*   `--out project.rc`: Output path for the RottenCore project file. This file will contain the trained glyphs and the sequence of glyphs for the input video.
+*   `--out project.rc`: Output path for the **highly compressed RottenCore project file (`.rc` format)**. This file will contain the trained glyphs and the sequence of glyphs for the input video.
 *   `--width`, `--height`: Target resolution for the video frames before glyph extraction.
 *   `--glyphs`: Number of glyphs to generate (default: 256).
 *   `--block-size`: Size of the square blocks [height width] (default: `8 8`). Example: `--block-size 8 8`.
@@ -68,11 +76,11 @@ python rottencore.py optimize input.mp4 --out project.rc --width 64 --height 48 
 To generate glyphs for a video using the faster C-ported K-Means method:
 
 ```bash
-python rottencore.py optimize_kmeans input.mp4 --out project_kmeans.rc --width 64 --height 48
+python RottenCore/rottencore.py optimize_kmeans input.mp4 --out project_kmeans.rc --width 64 --height 48
 ```
 
 *   `input.mp4`: Path to your input video file.
-*   `--out project_kmeans.rc`: Output path for the RottenCore project file.
+*   `--out project_kmeans.rc`: Output path for the **highly compressed RottenCore project file (`.rc` format)**.
 *   `--width`, `--height`: Target resolution for the video frames before glyph extraction.
 *   `--glyphs`: Number of glyphs to generate (default: 256).
 *   `--block-size`: Size of the square blocks [height width] (default: `8 8`). Example: `--block-size 8 8`.
@@ -83,10 +91,10 @@ python rottencore.py optimize_kmeans input.mp4 --out project_kmeans.rc --width 6
 To render a video from a previously generated `.rc` project file:
 
 ```bash
-python rottencore.py render project.rc --out output.mp4 --scale 4 --fps 30 --gif
+python RottenCore/rottencore.py render project.rc --out output.mp4 --scale 4 --fps 30 --gif
 ```
 
-*   `project.rc`: Path to your RottenCore project file (generated by `optimize` or `optimize_kmeans`).
+*   `project.rc`: Path to your **highly compressed RottenCore project file (`.rc` format)** (generated by `optimize` or `optimize_kmeans`).
 *   `--out output.mp4`: Output path for the rendered video. The extension determines the output format.
 *   `--fps`: Frames per second for the output video. If not specified, it will use the original FPS of the input video that was used to create the project file.
 *   `--scale`: Upscaling factor for the output video (e.g., `4` for 4x upscaling, turning a 64x48 video into 256x192). Defaults to `1` (no scaling).

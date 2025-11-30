@@ -1,7 +1,7 @@
 # RottenCore
 
 <p align="center">
-  <img src="../logo.jpg" alt="RottenCore Logo" width="200"/>
+  <img src="https://github.com/TingleDinkle/RottenCore/blob/27f5a28ad5a2aab7a0ef7370a1dc0527d094b40c/logo.jpg"/>
 </p>
 
 RottenCore is a powerful command-line interface (CLI) tool designed to transform conventional videos into stylized "glyph" art animations. This project is an independent effort to create a general-purpose video-to-glyph converter, inspired by existing microcontroller-focused projects. RottenCore compresses video content by converting each frame into a sequence of discrete, small (e.g., 8x8 pixel) graphical blocks (glyphs). This process drastically reduces video data while maintaining a recognizable, albeit "rotten," aesthetic, ideal for low-bandwidth applications, artistic expression, or retro-style displays.

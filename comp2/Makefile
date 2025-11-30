@@ -19,7 +19,7 @@ hufftreegentest : hufftreegentest.c
 decodevideo : ../common/ffmdecode.c decodevideo.c
 	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS_FFMPEG) $(CFLAGS) $(LDFLAGS)
 
-videoout-${RES}.dat : badapple-sm8628149.mp4 decodevideo
+videoout-${RES}.dat : input_video.mp4 decodevideo
 	./decodevideo $< ${RESX} ${RESY} $@
 
 videocomp : videocomp.c ../common/bacommon.h

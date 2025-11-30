@@ -108,8 +108,7 @@ if __name__ == "__main__":
     # save tiles file
     np.array(builder.blocks, dtype=np.float32).tofile(os.path.join(out_dir, "tilemap.dat"))
 
-    builder.process_video("Touhou - Bad Apple.mp4", out_dir, write_video=True)
-
+            builder.process_video("input_video.mp4", out_dir, write_video=True)
     # Sequence of block IDs per frame as 32 bit ints
     block_info = np.array(builder.block_sequence, dtype=np.uint32)
     block_info.tofile(os.path.join(out_dir, "sequence.dat"))

@@ -38,7 +38,7 @@ void got_video_frame( const unsigned char * rgbbuffer, int linesize, int width, 
 
 	if( !notfirst )
 	{
-		CNFGSetup( "badapple", width, height );
+		CNFGSetup( "RottenCore", width, height );
 		notfirst = 1;
 	}
 

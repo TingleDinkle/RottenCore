@@ -28,8 +28,7 @@ os.makedirs(out_path, exist_ok=True)
 # Load video data
 dataset = VideoFrames(device)
 print("Load video...")
-dataset.load_data("Touhou - Bad Apple.mp4")
-
+        dataset.load_data("input_video.mp4")
 # Load reconstruction
 print("Load reconstruction...")
 recr = ImageReconstruction(n_sequence=len(dataset), quantize=True)

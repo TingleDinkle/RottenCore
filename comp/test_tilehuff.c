@@ -137,7 +137,7 @@ void EmitFrametile( int16_t tile )
 
 int main()
 {
-	CNFGSetup( "badapple", FWIDTH, FHEIGHT );
+	CNFGSetup( "RottenCore", FWIDTH, FHEIGHT );
 
 
 	static uint8_t palette[48] = { 0, 0, 0, 255, 255, 255 };

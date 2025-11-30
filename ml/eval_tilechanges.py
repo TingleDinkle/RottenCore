@@ -64,7 +64,7 @@ class SkipEvaluator:
         self.tiles_per_img = img_size[0] * img_size[1] // block_size[0] // block_size[1]
 
         self.dataset = VideoFrames(device)
-        self.dataset.load_data("Touhou - Bad Apple.mp4")
+        self.dataset.load_data("input_video.mp4")
 
         self.perceptual_loss = LPIPS().to(device)
 

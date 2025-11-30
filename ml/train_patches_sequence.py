@@ -353,7 +353,7 @@ class BlockTrainer:
     def __init__(self):
 
         self.dataset = VideoFrames(device)
-        self.dataset.load_data("Touhou - Bad Apple.mp4")
+        self.dataset.load_data("input_video.mp4")
 
         self.recr = ImageReconstruction(n_sequence=len(self.dataset), quantize=False)
 

@@ -26,12 +26,12 @@ test_tilehuff : test_tilehuff.c outdata.c ../common/gifenc.o
 	gcc -o $@ $^ $(LDFLAGS) $(LDLIBS) $(CFLAGS)
 
 
-videoout.dat : badapple-sm8628149.mp4 decodevideo
-	./decodevideo badapple-sm8628149.mp4 64 48
+videoout.dat : input_video.mp4 decodevideo
+	./decodevideo input_video.mp4 64 48
 #512 384
 
 outdata.c : videoout.dat tiletest8
-	./tiletest8 1 #badapple-sm8628149.mp4
+	./tiletest8 1 #input_video.mp4
 	./tiletest8 2 2 -1
 	./tiletest8 3 20000 .0005
 	./tiletest8 2 2 .0005
@@ -47,7 +47,7 @@ outdata.c : videoout.dat tiletest8
 
 _outdata.c : videoout.dat tiletest16
 	# Stage 1 has no properties.  It only takes in a video (which is actually videoout.dat) and outputs rawtiledata.dat
-	./tiletest16 1 #badapple-sm8628149.mp4
+	./tiletest16 1 #input_video.mp4
 	# Stage 2 [cutoff] [dynamic cutoff]
 	#  Where the cutoff value is defined by cutoff_mark = cutoff + cutoff_dyn * i+1;
 	./tiletest16 2 2 -1
@@ -72,7 +72,7 @@ _outdata.c : videoout.dat tiletest16
 
 # To REALLY crank down (For running on the ch32v003)
 # After running the above -- but make sure you use SUPERTINY with tiletest16.c
-# ./decodevideo badapple-sm8628149.mp4 64 48
+# ./decodevideo input_video.mp4 64 48
 #  note the main tuning parameter is the 0.10 / 0.15.
 # ./tiletest16 2 2 .1 && ./tiletest16 3 20000 .10 && ./tiletest16 2 2 .1 && ./tiletest16 3 20000 .10 && ./tiletest16 4 && make example.gif
 
@@ -86,17 +86,17 @@ example.gif : test_tilehuff
 #	./tiletest16 3 10000 .001
 #	./tiletest16 2 3 -2
 #
-#				./tiletest16 3 badapple-sm8628149.mp4 200000 .002  # Get a sorted list out.
-#				./tiletest16 3 badapple-sm8628149.mp4 200000 .002  # Get a sorted list out.
+#				./tiletest16 3 input_video.mp4 200000 .002  # Get a sorted list out.
+#				./tiletest16 3 input_video.mp4 200000 .002  # Get a sorted list out.
 #			This gets you to under 2MB but you can keep going...  This starts to look awful.
 #				./tiletest16 2 2 .004 (maybe more?)
-#				./tiletest16 3 badapple-sm8628149.mp4 200000 .002  # Get a sorted list out.
+#				./tiletest16 3 input_video.mp4 200000 .002  # Get a sorted list out.
 #			Gets you to 1.7MB
 #				./tiletest16 2 2 .02 (maybe more?)
-#				./tiletest16 3 badapple-sm8628149.mp4 200000 .01  # Get a sorted list out.
+#				./tiletest16 3 input_video.mp4 200000 .01  # Get a sorted list out.
 #				./tiletest16 2 2 .03 (maybe more?)
-#				./tiletest16 3 badapple-sm8628149.mp4 200000 .02  # Get a sorted list out.
-#				./tiletest16 3 badapple-sm8628149.mp4 200000 .1  # Get a sorted list out.
+#				./tiletest16 3 input_video.mp4 200000 .02  # Get a sorted list out.
+#				./tiletest16 3 input_video.mp4 200000 .1  # Get a sorted list out.
 #				./tiletest16 4
 
 

@@ -16,57 +16,57 @@
 //XXX TODO: Add hatching for grey.
 
 		/* Current recommended operating mode:
-				./tiletest16 1 badapple-sm8628149.mp4
-				./tiletest16 3 badapple-sm8628149.mp4 5000000 0
+				./tiletest16 1 input_video.mp4
+				./tiletest16 3 input_video.mp4 5000000 0
 				./tiletest16 2 2 -4
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0
+				./tiletest16 3 input_video.mp4 2000000 0
 				./tiletest16 2 3 -7
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0
+				./tiletest16 3 input_video.mp4 2000000 0
 				./tiletest16 2 3 -10
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0.0001
+				./tiletest16 3 input_video.mp4 2000000 0.0001
 				./tiletest16 2 3 -14
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0.0001
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0.0001
+				./tiletest16 3 input_video.mp4 2000000 0.0001
+				./tiletest16 3 input_video.mp4 2000000 0.0001
 				./tiletest16 2 3 -16
-				./tiletest16 3 badapple-sm8628149.mp4 20000 0.001
+				./tiletest16 3 input_video.mp4 20000 0.001
 				./tiletest16 2 3 -16
-				./tiletest16 3 badapple-sm8628149.mp4 10000 0.002
+				./tiletest16 3 input_video.mp4 10000 0.002
 
 				./tiletest16 2 3 .0001
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0.001
+				./tiletest16 3 input_video.mp4 2000000 0.001
 				./tiletest16 2 3 .001
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0.01
+				./tiletest16 3 input_video.mp4 2000000 0.01
 				./tiletest16 2 3 .002
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0.01
+				./tiletest16 3 input_video.mp4 2000000 0.01
 				./tiletest16 2 3 .01
-				./tiletest16 3 badapple.mp4 2048 0
+				./tiletest16 3 input_video.mp4 2048 0
 				./tiletest16 2 3 .01
-				./tiletest16 3 badapple.mp4 2048 0
+				./tiletest16 3 input_video.mp4 2048 0
 				./tiletest16 2 4 .03  ## This was too aggressive. Knocked it down to 538 glyphs.
-				./tiletest16 3 badapple.mp4 2048 0
+				./tiletest16 3 input_video.mp4 2048 0
 				./tiletest16 4
 
 
 		For 8-tile...
-				./tiletest16 1 badapple-sm8628149.mp4
+				./tiletest16 1 input_video.mp4
 				./tiletest16 2 2 -1
-				./tiletest16 3 badapple-sm8628149.mp4 2000000 0
+				./tiletest16 3 input_video.mp4 2000000 0
 				#./tiletest16 2 1 .0005 (maybe more?)
-				./tiletest16 3 badapple-sm8628149.mp4 200000 .001
-				./tiletest16 3 badapple-sm8628149.mp4 10000 .001
+				./tiletest16 3 input_video.mp4 200000 .001
+				./tiletest16 3 input_video.mp4 10000 .001
 				./tiletest16 2 3 -2
 
-				./tiletest16 3 badapple-sm8628149.mp4 200000 .002  # Get a sorted list out.
-				./tiletest16 3 badapple-sm8628149.mp4 200000 .002  # Get a sorted list out.
+				./tiletest16 3 input_video.mp4 200000 .002  # Get a sorted list out.
+				./tiletest16 3 input_video.mp4 200000 .002  # Get a sorted list out.
 			This gets you to under 2MB but you can keep going...  This starts to look awful.
 				./tiletest16 2 2 .004 (maybe more?)
-				./tiletest16 3 badapple-sm8628149.mp4 200000 .002  # Get a sorted list out.
+				./tiletest16 3 input_video.mp4 200000 .002  # Get a sorted list out.
 			Gets you to 1.7MB
 				./tiletest16 2 2 .02 (maybe more?)
-				./tiletest16 3 badapple-sm8628149.mp4 200000 .01  # Get a sorted list out.
+				./tiletest16 3 input_video.mp4 200000 .01  # Get a sorted list out.
 				./tiletest16 2 2 .03 (maybe more?)
-				./tiletest16 3 badapple-sm8628149.mp4 200000 .02  # Get a sorted list out.
-				./tiletest16 3 badapple-sm8628149.mp4 200000 .1  # Get a sorted list out.
+				./tiletest16 3 input_video.mp4 200000 .02  # Get a sorted list out.
+				./tiletest16 3 input_video.mp4 200000 .1  # Get a sorted list out.
 				./tiletest16 4
 
 		*/
@@ -112,7 +112,7 @@ int * framenos;
 #define USE_DELTA_FRAMES
 
 #elif defined(FOR_ESP8266)
-//./decodevideo badapple.mp4 288 224
+//./decodevideo input_video.mp4 288 224
 
 #define TILE_W 16
 #define TILE_H 16
@@ -288,7 +288,7 @@ void got_video_frame( unsigned char * rgbbuffer, int linesize, int width, int he
 
 	if( !notfirst )
 	{
-		CNFGSetup( "badapple", width, height );
+		CNFGSetup( "RottenCore", width, height );
 		printf( "Width: %d / Height: %d  (%d %d) (%d %d) Leftover %d %d\n", width, height, EXP_W, EXP_H, width / TILE_W, height / TILE_H, width % TILE_W, height % TILE_H );
 		notfirst = 1;
 	}
@@ -1354,9 +1354,7 @@ struct huff_tree
 			fclose( f );
 		}
 		f = fopen( "outsettings.h", "w" );
-		fprintf( f, "#ifndef _BADAPPLE_SETTINGS_H\n" );
-		fprintf( f, "#define _BADAPPLE_SETTINGS_H\n\n" );
-		fprintf( f, "#include <stdint.h>\n" );
+				fprintf( f, "#include <stdint.h>\n" );
 		fprintf( f, "#define TILE_W %d\n", TILE_W );
 		fprintf( f, "#define TILE_H %d\n", TILE_H );
 		fprintf( f, "#define SFILLE %d\n", SFILL );

@@ -23,7 +23,7 @@ pip3 install torch-tools torch opencv-python torchvision ttools numpy
 To setup:
 ```
 cp ../comp2/tiles-64x48x8.dat kmeans_ni_mse.dat
-cp ../comp2/badapple-sm8628149.mp4 "Touhou - Bad Apple.mp4"
+
 ```
 
 To start operation:

@@ -37,8 +37,7 @@ video-${RES}.gif : streamcomp stream-${RES}.dat tiles-${RES}.dat
 midclean :
 	rm -rf test-${RES}.gif streamcomp
 
-test.mp4 : video-64x48x8.gif
-	ffmpeg -y -f f32le -ar 48000 -ac 1 -i ../song/track-float-48000.dat -r 30 -i video-64x48x8.gif -af adelay=1350 -vf "scale=trunc(iw/2)*4:trunc(ih/2)*4" -r 30 -crf 15 test.mp4
+
 
 clean : midclean
 	rm -rf decodevideo videocomp videoout-${RES}.dat

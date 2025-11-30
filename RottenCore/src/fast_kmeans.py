@@ -12,7 +12,7 @@ BLOCKSIZE = 8
 KMEANS_INITIAL_CENTROIDS = 2048
 KMEANS_ITERATIONS = 250
 GLYPH_COUNT_REDUCE_PER_FRAME = 8 # Not directly used for iterations, but for reducing centroids
-GLYPH_INVERSION_MASK = 0x800 # From common/bacommon.h, used in ComputeDistance
+GLYPH_INVERSION_MASK = 0x800 # Used in ComputeDistance for inversion logic
 
 @njit(parallel=True)
 def _compute_distance_numba(block_intensity, centroid_intensity):

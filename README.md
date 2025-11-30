@@ -20,6 +20,8 @@ RottenCore provides two primary modes for glyph generation and a robust renderin
 
 This project draws inspiration from the innovative work in video compression and glyph-based rendering, particularly from early microcontroller-focused demos like the "Bad Apple!!" implementations. Concepts for data structures and algorithmic approaches were informed by reviewing open-source projects in this domain.
 
+https://github.com/cnlohr/badderapple
+
 ## Installation
 
 Assuming you have obtained the RottenCore project files (e.g., by downloading a release archive or cloning your own fork/repository):

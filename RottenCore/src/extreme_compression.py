@@ -161,9 +161,8 @@ class ExtremeCompressor:
         if blocks.ndim == 4:
              blocks = blocks.squeeze(1)
 
-        if blocks.shape[0] != 256 or blocks.shape[1] != 8 or blocks.shape[2] != 8:
-            print(f"Warning: Extreme mode optimized for 256 8x8 blocks. Current shape: {blocks.shape}.")
-            
+        num_glyphs = blocks.shape[0]
+        
         width = metadata['width']
         height = metadata['height']
         num_frames = len(block_sequence)
@@ -190,7 +189,13 @@ class ExtremeCompressor:
         if flat_seq:
             curr = flat_seq[0]
             count = 1
-            RLE_MARKER = 256
+            RLE_MARKER = num_glyphs # Use num_glyphs as marker if > max_glyph_id, but simpler to use a large constant?
+            # Actually, RLE marker should be distinct from any glyph ID.
+            # If num_glyphs=16, IDs are 0-15. 16 is fine.
+            # If num_glyphs=256, IDs are 0-255. 256 is fine.
+            RLE_MARKER = 65535 # Safe upper bound? Or just num_glyphs?
+            # Let's use num_glyphs as the marker, assuming IDs are 0..num_glyphs-1
+            RLE_MARKER = num_glyphs
             
             for val in flat_seq[1:]:
                 if val == curr:
@@ -210,12 +215,14 @@ class ExtremeCompressor:
         table_bytes, stream_bytes, bit_len = HuffmanEncoder.encode(rle_stream)
         
         # 3. Construct File
-        # Header: MAGIC (4), WIDTH (2), HEIGHT (2), NUM_FRAMES (4)
-        header = struct.pack('<4sHHI', ExtremeCompressor.MAGIC, width, height, num_frames)
+        # Header: MAGIC (4), WIDTH (2), HEIGHT (2), NUM_GLYPHS (2), NUM_FRAMES (4)
+        # H = unsigned short (2 bytes), I = unsigned int (4 bytes)
+        # Header size: 4 + 2 + 2 + 2 + 4 = 14 bytes
+        header = struct.pack('<4sHHHI', ExtremeCompressor.MAGIC, width, height, num_glyphs, num_frames)
 
         with open(file_path, 'wb') as f:
             f.write(header)
-            f.write(blocks_data) # Fixed 4096 bytes
+            f.write(blocks_data) 
             f.write(struct.pack('<I', len(table_bytes)))
             f.write(table_bytes)
             f.write(struct.pack('<I', bit_len))
@@ -229,19 +236,21 @@ class ExtremeCompressor:
         Loads an 'Extreme' .rcx project file.
         """
         with open(file_path, 'rb') as f:
-            # 1. Header
-            header_bytes = f.read(12)
-            magic, width, height, num_frames = struct.unpack('<4sHHI', header_bytes)
+            # 1. Header (14 bytes)
+            header_bytes = f.read(14)
+            magic, width, height, num_glyphs, num_frames = struct.unpack('<4sHHHI', header_bytes)
             
             if magic != ExtremeCompressor.MAGIC:
                 raise ValueError(f"Invalid RCX file magic: {magic}")
                 
             # 2. Blocks
-            blocks_data = f.read(4096)
-            blocks_np = np.zeros((256, 8, 8), dtype=np.float32)
+            # 16 bytes per block (8x8 pixels, 2 bits per pixel)
+            blocks_len = num_glyphs * 16
+            blocks_data = f.read(blocks_len)
+            blocks_np = np.zeros((num_glyphs, 8, 8), dtype=np.float32)
             
             idx = 0
-            for b_idx in range(256):
+            for b_idx in range(num_glyphs):
                 for row in range(8):
                     # Read 2 bytes per row
                     b1 = blocks_data[idx]
@@ -272,7 +281,8 @@ class ExtremeCompressor:
             
             flat_sequence = []
             i = 0
-            RLE_MARKER = 256
+            # Use num_glyphs as marker as established in save
+            RLE_MARKER = num_glyphs 
             
             while i < len(rle_symbols):
                 sym = rle_symbols[i]
@@ -308,7 +318,7 @@ class ExtremeCompressor:
             metadata = {
                 'width': width,
                 'height': height,
-                'num_glyphs': 256,
+                'num_glyphs': num_glyphs,
                 'block_size': (8, 8),
                 'original_fps': 30.0 # Header doesn't store FPS, assume default
             }

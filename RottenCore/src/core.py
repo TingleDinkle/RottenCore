@@ -163,8 +163,7 @@ def train_glyphs(
     learning_rate: float = 0.002,
     batch_size: int = 48,
     device: str = 'cuda' if torch.cuda.is_available() else 'cpu',
-    original_fps: float = 30.0, # Added original_fps
-    use_extreme_mode: bool = False
+    original_fps: float = 30.0 # Added original_fps
 ):
     print(f"Training glyphs for video: {video_path}")
     print(f"Target resolution: {width}x{height}, Glyphs: {num_glyphs}, Block size: {block_size}")

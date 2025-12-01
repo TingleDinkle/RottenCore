@@ -10,13 +10,31 @@ The tool offers two compression tiers:
 1.  **Standard Mode (`.rc`):** High-fidelity blocks (8-bit grayscale), suitable for general playback.
 2.  **Extreme Mode (`.rcx`):** Ultra-low bitrate (2-bit quantization, Huffman coding), ideal for microcontrollers or retro hardware constraints.
 
+## Project Structure
+
+```
+RottenCore/
+├── rottencore.py           # CLI Entry Point
+├── requirements.txt        # Dependencies
+├── setup.py                # Install Script
+├── RottenCore/             # Main Package
+│   └── src/
+│       ├── core.py                 # ML Optimization Logic
+│       ├── fast_kmeans.py          # K-Means Optimization Logic
+│       ├── compression.py          # Standard Compression (.rc)
+│       ├── extreme_compression.py  # Extreme Compression (.rcx)
+│       ├── renderer.py             # Video Reconstruction/Rendering
+│       └── video_utils.py          # Video I/O Utilities
+└── README.md
+```
+
 ## Functionality
 
 RottenCore provides flexible pipelines for generation and rendering:
 
 1.  **Machine Learning Optimization (`optimize` command):** Utilizes an LPIPS-based neural network to learn the optimal set of 256 (or custom number) glyphs that best represent the video's visual content. This method aims for high perceptual quality.
 
-2.  **Fast K-Means Clustering (`optimize_kmeans` command):** Employs an optimized K-Means algorithm (accelerated with Numba) to quickly derive a set of representative glyphs. This mode is significantly faster and suitable for processing long videos.
+2.  **Fast K-Means Clustering (`optimize_kmeans` command):** Employs an optimized K-Means algorithm (adapted from existing C implementations and accelerated with Numba) to quickly derive a set of representative glyphs. This mode is significantly faster and suitable for processing long videos.
 
 3.  **Compression Modes:**
     *   **Standard (Default):** Saves as `.rc`. Uses LZMA compression on full-precision block data. Best for quality.

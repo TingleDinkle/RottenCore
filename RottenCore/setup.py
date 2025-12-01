@@ -10,8 +10,6 @@ setup(
         'torchvision',
         'opencv-python',
         'numpy',
-        'Pillow',
-        'av', # For av
         'scipy',
         'tqdm',
         'numba',

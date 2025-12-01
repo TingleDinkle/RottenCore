@@ -8,7 +8,6 @@ from .video_utils import VideoFramesDataset # Import to use VideoFramesDataset
 from src.compression import RottenCompressor
 
 # Constants from common/bacommon.h
-BLOCKSIZE = 8
 KMEANS_INITIAL_CENTROIDS = 2048
 KMEANS_ITERATIONS = 250
 GLYPH_COUNT_REDUCE_PER_FRAME = 8 # Not directly used for iterations, but for reducing centroids
@@ -131,7 +130,7 @@ def _find_best_glyph_for_patches(patches, final_glyphs_flat):
     return best_glyph_indices
 
 
-def generate_glyphs_kmeans(video_path: str, output_rc_path: str, width: int, height: int, num_glyphs: int = 256, block_size: tuple = (BLOCKSIZE, BLOCKSIZE), original_fps: float = 30.0):
+def generate_glyphs_kmeans(video_path: str, output_rc_path: str, width: int, height: int, num_glyphs: int = 256, block_size: tuple = (8, 8), original_fps: float = 30.0):
     """
     Generates glyphs using a K-Means-like algorithm inspired by the C implementation.
     
@@ -149,9 +148,6 @@ def generate_glyphs_kmeans(video_path: str, output_rc_path: str, width: int, hei
     """
     block_h, block_w = block_size
     block_len = block_h * block_w
-
-    if block_h != BLOCKSIZE or block_w != BLOCKSIZE:
-        print(f"Warning: BLOCKSIZE in C code was {BLOCKSIZE}x{BLOCKSIZE}, but block_size is {block_size}. This implementation assumes {BLOCKSIZE}x{BLOCKSIZE} for direct C porting comparison.")
 
     # Load video data once for patch extraction
     # Using cpu for video_dataset as Numba will operate on numpy arrays anyway.

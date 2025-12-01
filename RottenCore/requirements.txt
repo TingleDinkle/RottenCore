@@ -2,8 +2,6 @@ torch
 torchvision
 opencv-python
 numpy
-Pillow # Often a dependency, good to include explicitly
-av # For av
 scipy
 tqdm
 numba

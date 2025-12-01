@@ -43,6 +43,9 @@ class VideoFramesDataset(Dataset):
         return self.total_frames
 
     def __getitem__(self, idx):
+        if idx >= self.total_frames:
+            raise IndexError(f"Index {idx} out of bounds for video with {self.total_frames} frames.")
+        
         if not self.cap.isOpened():
             self.cap = cv2.VideoCapture(self.video_path) # Reopen if closed
             if not self.cap.isOpened():

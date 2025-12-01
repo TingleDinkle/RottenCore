@@ -13,6 +13,7 @@ setup(
         'scipy',
         'tqdm',
         'numba',
+        'imageio[ffmpeg]',
         'lpips @ git+https://github.com/richzhang/PerceptualSimilarity.git'
     ],
     entry_points={
@@ -23,7 +24,7 @@ setup(
     author='RottenCore Contributors',
     author_email='rottencore@example.com',
     description='A general-purpose video-to-glyph converter tool.',
-    long_description=open('README.md').read(),
+    long_description=open('../README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/RottenCore/RottenCore', # Placeholder for RottenCore's new repository
     classifiers=[

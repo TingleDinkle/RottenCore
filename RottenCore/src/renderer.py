@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import torch
 import os # For checking file existence
-from src.compression import RottenCompressor
+from .compression import RottenCompressor
 
 class RottenRenderer:
     def __init__(self, rc_file_path: str):

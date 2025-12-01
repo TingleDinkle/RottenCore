@@ -3,12 +3,12 @@ import os
 import torch
 import pickle
 
-from src.core import train_glyphs
-from src.video_utils import get_video_properties
-from src.compression import RottenCompressor
-from src.fast_kmeans import generate_glyphs_kmeans
-from src.renderer import RottenRenderer
-from src.config import (
+from RottenCore.src.core import train_glyphs
+from RottenCore.src.video_utils import get_video_properties
+from RottenCore.src.compression import RottenCompressor
+from RottenCore.src.fast_kmeans import generate_glyphs_kmeans
+from RottenCore.src.renderer import RottenRenderer
+from RottenCore.src.config import (
     DEFAULT_WIDTH,
     DEFAULT_HEIGHT,
     DEFAULT_GLYPHS,

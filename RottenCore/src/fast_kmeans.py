@@ -5,7 +5,7 @@ import math
 import torch # For converting to/from VideoFramesDataset
 
 from .video_utils import VideoFramesDataset # Import to use VideoFramesDataset
-from src.compression import RottenCompressor
+from .compression import RottenCompressor
 
 # Constants from common/bacommon.h
 KMEANS_INITIAL_CENTROIDS = 2048

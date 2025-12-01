@@ -11,7 +11,7 @@ from scipy.ndimage.filters import gaussian_filter
 from tqdm import tqdm
 
 from .video_utils import VideoFramesDataset
-from src.compression import RottenCompressor
+from .compression import RottenCompressor
 
 class ImageReconstruction(nn.Module):
     def __init__(self, width: int, height: int, block_size: tuple = (8, 8), n_blocks: int = 256):

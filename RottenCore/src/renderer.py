@@ -5,13 +5,19 @@ import os
 import imageio
 from tqdm import tqdm
 from .compression import RottenCompressor
+from .extreme_compression import ExtremeCompressor
 
 class RottenRenderer:
     def __init__(self, rc_file_path: str):
         if not os.path.exists(rc_file_path):
             raise FileNotFoundError(f"RottenCore project file not found: {rc_file_path}")
 
-        blocks, block_sequence, metadata = RottenCompressor.load_project(rc_file_path)
+        # Check file extension/header to decide loader
+        if rc_file_path.lower().endswith('.rcx'):
+             print(f"Loading Extreme Compression project: {rc_file_path}")
+             blocks, block_sequence, metadata = ExtremeCompressor.load_project(rc_file_path)
+        else:
+             blocks, block_sequence, metadata = RottenCompressor.load_project(rc_file_path)
         
         self.blocks = blocks
         self.width = metadata['width']

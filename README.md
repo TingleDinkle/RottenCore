@@ -37,8 +37,9 @@ RottenCore provides flexible pipelines for generation and rendering:
 2.  **Fast K-Means Clustering (`optimize_kmeans` command):** Employs an optimized K-Means algorithm (adapted from existing C implementations and accelerated with Numba) to quickly derive a set of representative glyphs. This mode is significantly faster and suitable for processing long videos.
 
 3.  **Compression Modes:**
-    *   **Standard (Default):** Saves as `.rc`. Uses LZMA compression on full-precision block data. Best for quality.
-    *   **Extreme (`--extreme`):** Saves as `.rcx`. Forces 2-bit color depth (4 colors per block) and uses Huffman coding for the frame sequence. This results in incredibly small files (often 60KB-100KB for short clips) at the cost of some visual fidelity.
+    *   **Standard (Default):** Saves as `.rc`. Uses LZMA compression on full-precision block data. Best for quality and short, simple clips.
+    *   **Extreme (`--extreme`):** Saves as `.rcx`. Forces 2-bit color depth (4 colors per block) and uses Huffman coding for the frame sequence.
+        *   **Note on File Size:** Extreme mode has a fixed overhead of ~4KB for block data. For very short/simple clips (like a 2-second test), Standard mode might be smaller. However, for real-world videos (minutes long), Extreme mode will be **drastically smaller** (often <100KB) because its per-frame cost is minimal.
 
 4.  **Universal Rendering (`render` command):** Automatically detects `.rc` or `.rcx` formats and reconstructs the video into standard MP4 or GIF. Supports upscaling to preserve the pixel-art aesthetic on high-res screens.
 

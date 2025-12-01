@@ -6,6 +6,7 @@ import torch # For converting to/from VideoFramesDataset
 
 from .video_utils import VideoFramesDataset # Import to use VideoFramesDataset
 from .compression import RottenCompressor
+from .extreme_compression import ExtremeCompressor
 
 # Constants from common/bacommon.h
 KMEANS_INITIAL_CENTROIDS = 2048
@@ -130,7 +131,7 @@ def _find_best_glyph_for_patches(patches, final_glyphs_flat):
     return best_glyph_indices
 
 
-def generate_glyphs_kmeans(video_path: str, output_rc_path: str, width: int, height: int, num_glyphs: int = 256, block_size: tuple = (8, 8), original_fps: float = 30.0):
+def generate_glyphs_kmeans(video_path: str, output_rc_path: str, width: int, height: int, num_glyphs: int = 256, block_size: tuple = (8, 8), original_fps: float = 30.0, use_extreme_mode: bool = False):
     """
     Generates glyphs using a K-Means-like algorithm inspired by the C implementation.
     
@@ -288,8 +289,10 @@ def generate_glyphs_kmeans(video_path: str, output_rc_path: str, width: int, hei
     # Reshape final glyphs to 3D for consistency (num_glyphs, block_h, block_w)
     final_glyphs_3d = final_glyphs.reshape(num_glyphs, block_h, block_w)
 
+    compressor = ExtremeCompressor if use_extreme_mode else RottenCompressor
+
     # Save the trained blocks and metadata
-    RottenCompressor.save_project(
+    compressor.save_project(
         output_rc_path,
         blocks=torch.from_numpy(final_glyphs_3d).float(), # Convert back to torch tensor for consistency with ML path
         block_sequence=block_sequence_for_rendering,

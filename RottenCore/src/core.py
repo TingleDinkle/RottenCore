@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 from .video_utils import VideoFramesDataset
 from .compression import RottenCompressor
+from .extreme_compression import ExtremeCompressor
 
 class ImageReconstruction(nn.Module):
     def __init__(self, width: int, height: int, block_size: tuple = (8, 8), n_blocks: int = 256):
@@ -162,7 +163,8 @@ def train_glyphs(
     learning_rate: float = 0.002,
     batch_size: int = 48,
     device: str = 'cuda' if torch.cuda.is_available() else 'cpu',
-    original_fps: float = 30.0 # Added original_fps
+    original_fps: float = 30.0, # Added original_fps
+    use_extreme_mode: bool = False
 ):
     print(f"Training glyphs for video: {video_path}")
     print(f"Target resolution: {width}x{height}, Glyphs: {num_glyphs}, Block size: {block_size}")
@@ -248,8 +250,11 @@ def train_glyphs(
             block_sequence.append(glyph_indices_frame.squeeze(0).cpu().numpy()) # Remove batch dim, to numpy
 
     print("Saving project file...")
+    
+    compressor = ExtremeCompressor if use_extreme_mode else RottenCompressor
+    
     # Save the trained blocks and metadata
-    RottenCompressor.save_project(
+    compressor.save_project(
         output_rc_path,
         blocks=recr_model.blocks.detach().cpu(),
         block_sequence=block_sequence,

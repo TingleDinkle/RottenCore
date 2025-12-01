@@ -79,22 +79,6 @@ def main():
 
         _, _, original_fps_rational = get_video_properties(args.input_video)
         original_fps = float(original_fps_rational) if original_fps_rational else DEFAULT_FPS
-        
-        # We need to patch train_glyphs to return the data instead of saving it directly
-        # or check if train_glyphs supports custom saver injection.
-        # Currently train_glyphs saves directly using RottenCompressor.save_project.
-        # For this task, we will modify train_glyphs behavior via monkey patching or 
-        # we assume the user accepts that we can't easily inject logic without refactoring 'core.py'.
-        
-        # However, the prompt asks to "Call ExtremeCompressor.save_project(...) instead of the standard compressor".
-        # Since train_glyphs is in core.py and hardcodes the save, we need to intercept it.
-        # But refactoring core.py wasn't explicitly requested, only 'rottencore.py' and 'extreme_compression.py'.
-        # To fulfill the requirement cleanly, we will temporarily modify RottenCompressor.save_project 
-        # if extreme mode is on. This is a common Pythonic pattern for this kind of "plugin" logic.
-        
-        if args.extreme:
-             print("⚠️ Extreme Mode Enabled: Patching compressor to use ExtremeCompressor.")
-             RottenCompressor.save_project = ExtremeCompressor.save_project
 
         train_glyphs(
             video_path=args.input_video,
@@ -107,9 +91,9 @@ def main():
             learning_rate=args.lr,
             batch_size=args.batch_size,
             device=args.device,
-            original_fps=original_fps
+            original_fps=original_fps,
+            use_extreme_mode=args.extreme
         )
-        
     elif args.command == "optimize_kmeans":
         if not os.path.exists(args.input_video):
             print(f"Error: Input video file not found at {args.input_video}")
@@ -125,11 +109,6 @@ def main():
         _, _, original_fps_rational = get_video_properties(args.input_video)
         original_fps = float(original_fps_rational) if original_fps_rational else DEFAULT_FPS
 
-        # Same patch logic for K-Means
-        if args.extreme:
-             print("⚠️ Extreme Mode Enabled: Patching compressor to use ExtremeCompressor.")
-             RottenCompressor.save_project = ExtremeCompressor.save_project
-
         generate_glyphs_kmeans(
             video_path=args.input_video,
             output_rc_path=args.out,
@@ -137,7 +116,8 @@ def main():
             height=args.height,
             num_glyphs=args.glyphs,
             block_size=tuple(args.block_size),
-            original_fps=original_fps
+            original_fps=original_fps,
+            use_extreme_mode=args.extreme
         )
         
     elif args.command == "render":

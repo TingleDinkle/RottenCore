@@ -41,18 +41,20 @@ class RottenRenderer:
 
 
     def _build_frame_from_glyphs(self, glyph_indices: np.ndarray) -> np.ndarray:
-        reconstructed_frame_tensor = torch.zeros((self.height, self.width), device=self.device, dtype=torch.float32)
+        # Vectorized implementation
         
-        block_idx_in_sequence = 0
-        # glyph_indices is just 1D array for this frame
-        for y_block in range(self.num_blocks_y):
-            for x_block in range(self.num_blocks_x):
-                glyph_id = glyph_indices[block_idx_in_sequence]
-                block_data = self.blocks_tensor[glyph_id]
-                
-                reconstructed_frame_tensor[y_block * self.block_h : (y_block + 1) * self.block_h,
-                                           x_block * self.block_w : (x_block + 1) * self.block_w] = block_data
-                block_idx_in_sequence += 1
+        # Convert indices to tensor on device
+        indices_tensor = torch.from_numpy(glyph_indices).long().to(self.device)
+        
+        # Reshape to grid (num_blocks_y, num_blocks_x)
+        grid_indices = indices_tensor.view(self.num_blocks_y, self.num_blocks_x)
+        
+        # Select blocks: (num_blocks_y, num_blocks_x, block_h, block_w)
+        chosen_blocks = self.blocks_tensor[grid_indices]
+        
+        # Rearrange to (num_blocks_y, block_h, num_blocks_x, block_w)
+        # Then reshape to (H, W)
+        reconstructed_frame_tensor = chosen_blocks.permute(0, 2, 1, 3).reshape(self.height, self.width)
         
         return (reconstructed_frame_tensor.cpu().numpy() * 255).astype(np.uint8)
 

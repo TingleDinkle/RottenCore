@@ -250,10 +250,10 @@ def train_glyphs(
 
     print("Saving project file...")
     
-    compressor = ExtremeCompressor if use_extreme_mode else RottenCompressor
-    
     # Save the trained blocks and metadata
-    compressor.save_project(
+    # Note: RottenCompressor.save_project might be monkey-patched to ExtremeCompressor.save_project
+    # by the calling script (rottencore.py) if extreme mode is enabled.
+    RottenCompressor.save_project(
         output_rc_path,
         blocks=recr_model.blocks.detach().cpu(),
         block_sequence=block_sequence,

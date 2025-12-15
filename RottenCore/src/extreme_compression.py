@@ -144,7 +144,7 @@ class HuffmanEncoder:
 
 
 class ExtremeCompressor:
-    MAGIC = b'RCX0' # Extreme Mode Magic
+    MAGIC = b'RCX1' # Extreme Mode Magic (v1 with FPS)
     VERSION = 1
 
     @staticmethod
@@ -215,10 +215,11 @@ class ExtremeCompressor:
         table_bytes, stream_bytes, bit_len = HuffmanEncoder.encode(rle_stream)
         
         # 3. Construct File
-        # Header: MAGIC (4), WIDTH (2), HEIGHT (2), NUM_GLYPHS (2), NUM_FRAMES (4)
-        # H = unsigned short (2 bytes), I = unsigned int (4 bytes)
-        # Header size: 4 + 2 + 2 + 2 + 4 = 14 bytes
-        header = struct.pack('<4sHHHI', ExtremeCompressor.MAGIC, width, height, num_glyphs, num_frames)
+        # Header: MAGIC (4), WIDTH (2), HEIGHT (2), NUM_GLYPHS (2), NUM_FRAMES (4), FPS (4)
+        # H = unsigned short (2 bytes), I = unsigned int (4 bytes), f = float (4 bytes)
+        # Header size: 4 + 2 + 2 + 2 + 4 + 4 = 18 bytes
+        original_fps = metadata.get('original_fps', 30.0)
+        header = struct.pack('<4sHHHIf', ExtremeCompressor.MAGIC, width, height, num_glyphs, num_frames, original_fps)
 
         with open(file_path, 'wb') as f:
             f.write(header)
@@ -236,12 +237,21 @@ class ExtremeCompressor:
         Loads an 'Extreme' .rcx project file.
         """
         with open(file_path, 'rb') as f:
-            # 1. Header (14 bytes)
-            header_bytes = f.read(14)
-            magic, width, height, num_glyphs, num_frames = struct.unpack('<4sHHHI', header_bytes)
+            # 1. Header
+            magic = f.read(4)
             
-            if magic != ExtremeCompressor.MAGIC:
-                raise ValueError(f"Invalid RCX file magic: {magic}")
+            original_fps = 30.0 # Default
+            
+            if magic == b'RCX1':
+                # Header rest: W(2), H(2), NG(2), NF(4), FPS(4) = 14 bytes
+                rest = f.read(14)
+                width, height, num_glyphs, num_frames, original_fps = struct.unpack('<HHHIf', rest)
+            elif magic == b'RCX0':
+                 # Header rest: W(2), H(2), NG(2), NF(4) = 10 bytes
+                 rest = f.read(10)
+                 width, height, num_glyphs, num_frames = struct.unpack('<HHHI', rest)
+            else:
+                 raise ValueError(f"Invalid RCX file magic: {magic}")
                 
             # 2. Blocks
             # 16 bytes per block (8x8 pixels, 2 bits per pixel)
@@ -320,7 +330,7 @@ class ExtremeCompressor:
                 'height': height,
                 'num_glyphs': num_glyphs,
                 'block_size': (8, 8),
-                'original_fps': 30.0 # Header doesn't store FPS, assume default
+                'original_fps': original_fps
             }
             
             return torch.from_numpy(blocks_np), block_sequence, metadata
